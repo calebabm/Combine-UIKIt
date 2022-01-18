@@ -16,7 +16,7 @@ class MainViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.navigationItem.title = "Pokemon"
+        navigationItem.title = "Pokemon"
         tableView.delegate = self
         tableView.dataSource = self
         
@@ -41,9 +41,9 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         guard let detailViewController = storyboard.instantiateViewController(identifier: "DetailViewController") as? DetailViewController else { return }
-        let detailViewModel = DetailViewModel(viewModel.pokemon[indexPath.row], NetworkService()) {
+        let detailViewModel = DetailViewModel(viewModel.pokemon[indexPath.row], NetworkService()) { [weak self] in
             DispatchQueue.main.async {
-                self.navigationController?.present(detailViewController, animated: true, completion: nil)
+                self?.navigationController?.present(detailViewController, animated: true, completion: nil)
             }
         }
         detailViewController.setup(detailViewModel)

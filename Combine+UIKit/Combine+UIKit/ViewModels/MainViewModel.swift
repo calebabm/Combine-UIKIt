@@ -8,26 +8,29 @@
 import Foundation
 
 class MainViewModel {
-    var results = Results(results: [])
-    var pokemon: [Pokemon] = []
-    var networkService: NetworkService
+    private(set) var networkService: NetworkService
+    private(set) var results = Results(results: [])
+    private(set) var pokemon: [Pokemon] = []
     
-    func fetchData() {
-        networkService.getRequest(urlString: "https://pokeapi.co/api/v2/pokemon?limit=151&offset=0", model: results) { result in
+    private func fetchData(completion: @escaping () -> Void) {
+        networkService.getRequest(urlString: "https://pokeapi.co/api/v2/pokemon?limit=151&offset=0", model: results) { [weak self] result in
             switch result {
             case .success(let response):
                 guard let pokemonResults = response as? Results else {
                     fatalError("No results from endpoint")
                 }
-                self.pokemon = pokemonResults.results
+                self?.pokemon = pokemonResults.results
+                completion()
             case .failure(let error):
-                print(error)
+                fatalError("No data from url: \(error)")
             }
         }
     }
     
-    init(networkService: NetworkService) {
+    init(networkService: NetworkService, completion: @escaping () -> Void) {
         self.networkService = networkService
-        fetchData()
+        fetchData(completion: {
+            completion()
+        })
     }
 }

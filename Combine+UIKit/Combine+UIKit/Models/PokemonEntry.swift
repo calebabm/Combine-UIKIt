@@ -12,7 +12,6 @@ class PokemonEntry {
     var nickname = ""
     var pokemonDetails: PokemonDetails
     var image: UIImage
-    //var types: Types
     
     init(pokemonDetails: PokemonDetails, image: UIImage) {
         self.pokemonDetails = pokemonDetails
