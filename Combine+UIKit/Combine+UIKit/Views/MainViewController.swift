@@ -42,13 +42,11 @@ class MainViewController: UIViewController {
         
         viewModel.selectedPokemon.sink { _ in } receiveValue: { entry in
             DispatchQueue.main.async {
-                
                 let viewModel = DetailViewModel(entry)
                 let storyboard = UIStoryboard(name: "Main", bundle: nil)
                 guard let detailViewController = storyboard.instantiateViewController(identifier: "DetailViewController") as? DetailViewController else { return }
                 detailViewController.setup(viewModel)
                 self.navigationController?.present(detailViewController, animated: true, completion: nil)
-                
             }
         }
         .store(in: &subscriptions)

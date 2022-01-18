@@ -22,6 +22,7 @@ class DetailViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupBindings()
+        nameLabel.text = nameLabel.text?.capitalized
     }
     
     func setupBindings() {
