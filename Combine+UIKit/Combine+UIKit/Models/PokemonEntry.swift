@@ -5,7 +5,6 @@
 //  Created by Caleb Meurer on 1/17/22.
 //
 
-import Foundation
 import UIKit
 
 class PokemonEntry {

@@ -31,14 +31,6 @@ class NetworkService {
             .catch { _ in Fail(error: NetworkError.errorDecoding).eraseToAnyPublisher() }
             .eraseToAnyPublisher()
     }
-    
-    private func parseResultsJson<T: Codable>(data: Data, modelType: T, completion: (Result<T, Error>) -> Void) {
-        let jsonDecoder = JSONDecoder()
-        guard let decodedData = try? jsonDecoder.decode(T.self, from: data) else {
-            fatalError("Error decoding data from json to type")
-        }
-        completion(.success(decodedData))
-    }
 }
 
 enum NetworkError: Error {
