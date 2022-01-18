@@ -64,13 +64,27 @@
                     <view key="view" contentMode="scaleToFill" id="Jic-CZ-6Lu">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Udp-WH-tiO">
+                                <rect key="frame" x="65" y="310" width="284" height="276"/>
+                            </imageView>
+                        </subviews>
                         <viewLayoutGuide key="safeArea" id="kRJ-nm-IS6"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="Udp-WH-tiO" firstAttribute="leading" secondItem="kRJ-nm-IS6" secondAttribute="leading" constant="65" id="XMX-YO-NF6"/>
+                            <constraint firstItem="Udp-WH-tiO" firstAttribute="top" secondItem="kRJ-nm-IS6" secondAttribute="top" constant="266" id="aHq-mc-4Na"/>
+                            <constraint firstItem="Udp-WH-tiO" firstAttribute="centerX" secondItem="Jic-CZ-6Lu" secondAttribute="centerX" id="bVa-jO-pZn"/>
+                            <constraint firstItem="Udp-WH-tiO" firstAttribute="centerY" secondItem="Jic-CZ-6Lu" secondAttribute="centerY" id="jhl-xx-eB8"/>
+                        </constraints>
                     </view>
+                    <connections>
+                        <outlet property="imageView" destination="Udp-WH-tiO" id="BaK-VG-OGI"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="4Gq-vK-zfg" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="972" y="100"/>
+            <point key="canvasLocation" x="971.01449275362324" y="99.776785714285708"/>
         </scene>
     </scenes>
     <resources>

@@ -15,8 +15,8 @@ class MainViewModel {
     func fetchData() {
         networkService.getRequest(urlString: "https://pokeapi.co/api/v2/pokemon?limit=151&offset=0", model: results) { result in
             switch result {
-            case .success(let data):
-                guard let pokemonResults = data as? Results else {
+            case .success(let response):
+                guard let pokemonResults = response as? Results else {
                     fatalError("No results from endpoint")
                 }
                 self.pokemon = pokemonResults.results

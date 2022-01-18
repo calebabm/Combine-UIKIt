@@ -40,8 +40,13 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        guard let viewController = storyboard.instantiateViewController(identifier: "DetailViewController") as? DetailViewController else { return }
-        navigationController?.present(viewController, animated: true, completion: nil)
+        guard let detailViewController = storyboard.instantiateViewController(identifier: "DetailViewController") as? DetailViewController else { return }
+        let detailViewModel = DetailViewModel(viewModel.pokemon[indexPath.row], NetworkService()) {
+            DispatchQueue.main.async {
+                self.navigationController?.present(detailViewController, animated: true, completion: nil)
+            }
+        }
+        detailViewController.setup(detailViewModel)
     }
     
     
