@@ -7,8 +7,8 @@
 
 import Foundation
 
-struct Results : Codable {
-    let results : [Pokemon]
+struct Results: Codable {
+    let results: [Pokemon]
 }
 
 struct Pokemon: Codable {
