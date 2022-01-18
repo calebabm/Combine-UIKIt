@@ -20,14 +20,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window = UIWindow(windowScene: windowScene)
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         guard let mainViewController = storyboard.instantiateViewController(identifier: "MainViewController") as? MainViewController else { return }
-        let viewModel = MainViewModel(networkService: NetworkService()) { [weak self] in
-            DispatchQueue.main.async {
-                let navigationController = UINavigationController(rootViewController: mainViewController)
-                self?.window?.rootViewController = navigationController
-                self?.window?.makeKeyAndVisible()
-            }
-        }
+        let viewModel = MainViewModel(networkService: NetworkService())
         mainViewController.setup(viewModel)
+        let navigationController = UINavigationController(rootViewController: mainViewController)
+        window?.rootViewController = navigationController
+        window?.makeKeyAndVisible()
     }
 }
 

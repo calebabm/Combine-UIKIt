@@ -15,13 +15,6 @@ class NetworkService {
         }
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
-//        let dataTask = session.dataTask(with: url) { data, response, error in
-//            guard let data = data else {
-//                fatalError("No data from request")
-//            }
-//        guard let data = request.httpBody else {
-//            fatalError("No data from server")
-//        }
         
         if let requestBodyParams = parameter {
             do {
@@ -37,16 +30,6 @@ class NetworkService {
             .eraseToAnyPublisher()
             .catch { _ in Fail(error: NetworkError.errorDecoding).eraseToAnyPublisher() }
             .eraseToAnyPublisher()
-//            self.parseResultsJson(data: data, modelType: model) { result in
-//                switch result {
-//                case .success(let model):
-//                    completion(.success(model))
-//                case .failure(let error):
-//                    completion(.failure(error))
-//                }
-//            }
-//        }
-//        dataTask.resume()
     }
     
     private func parseResultsJson<T: Codable>(data: Data, modelType: T, completion: (Result<T, Error>) -> Void) {

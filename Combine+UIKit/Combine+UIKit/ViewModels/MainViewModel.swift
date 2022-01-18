@@ -10,7 +10,7 @@ import Combine
 
 class MainViewModel {
     
-    var subscriptions = Set<AnyCancellable>()
+    private(set) var subscriptions = Set<AnyCancellable>()
     
     //MARK: Table View Datasource
     private var loadData: AnyPublisher<Void, Never> = PassthroughSubject<Void, Never>().eraseToAnyPublisher()
@@ -19,7 +19,7 @@ class MainViewModel {
     //MARK: Detail View Datasource
     var selectedPokemonSubject = PassthroughSubject<PokemonEntry, Never>()
     var selectedPokemon: AnyPublisher<PokemonEntry, Never> {
-            selectedPokemonSubject.eraseToAnyPublisher()
+        selectedPokemonSubject.eraseToAnyPublisher()
     }
     
     private(set) var networkService: NetworkService
@@ -61,11 +61,9 @@ class MainViewModel {
         }.store(in: &subscriptions)
     }
     
-    //MARK: Networking
     private func fetchData() -> AnyPublisher<Results, Error> {
         return networkService.getRequest(urlString: "https://pokeapi.co/api/v2/pokemon?limit=151&offset=0", model: results)
     }
-    
     
     private func getSprite(pokemonDetails: PokemonDetails, completion: @escaping (UIImage) -> Void) {
         guard let url = URL(string: pokemonDetails.sprites.front_default), let data = try? Data(contentsOf: url), let image = UIImage(data: data) else {
@@ -74,8 +72,7 @@ class MainViewModel {
         completion(image)
     }
     
-    init(networkService: NetworkService, completion: @escaping () -> Void) {
+    init(networkService: NetworkService) {
         self.networkService = networkService
-        completion()
     }
 }
