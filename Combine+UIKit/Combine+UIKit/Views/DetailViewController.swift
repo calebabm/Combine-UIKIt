@@ -25,7 +25,6 @@ class DetailViewController: UIViewController {
         setupBindings()
     }
     
-    //TODO: Read More about this and the AnyCancellable protocol
     func setupBindings() {
         subscriptions = [
             viewModel.$image.assign(to: \.image!, on: imageView),

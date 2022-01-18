@@ -6,8 +6,14 @@
 //
 
 import UIKit
+import Combine
 
 class MainViewModel {
+    
+    private var loadData: AnyPublisher<Void, Never> = PassthroughSubject<Void, Never>().eraseToAnyPublisher()
+    var reloadPokemonSubject = PassthroughSubject<Result<Void, Error>, Never>()
+    var subscriptions = Set<AnyCancellable>()
+    
     private(set) var networkService: NetworkService
     private(set) var results = Results(results: [])
     private(set) var pokemon: [Pokemon] = []
@@ -25,38 +31,34 @@ class MainViewModel {
         })
     }
     
-    //MARK: Networking
-    private func fetchData(completion: @escaping () -> Void) {
-        networkService.getRequest(urlString: "https://pokeapi.co/api/v2/pokemon?limit=151&offset=0", model: results) { [weak self] result in
-            switch result {
-            case .success(let response):
-                guard let pokemonResults = response as? Results else {
-                    fatalError("No results from endpoint")
-                }
-                self?.pokemon = pokemonResults.results
-                completion()
-            case .failure(let error):
-                fatalError("No data from url: \(error)")
+    func attachViewEventListener(loadData: AnyPublisher<Void, Never>) {
+        self.loadData = loadData
+        self.loadData
+//            .setFailureType(to: Error.self)
+//            .handleEvents(receiveOutput: { [weak self] _ in
+//                self?.pokemon.removeAll()
+//            })
+            .flatMap { _ -> AnyPublisher<Results, Error> in
+                return self.fetchData()
             }
-        }
+        .receive(on: DispatchQueue.main)
+            .handleEvents(receiveRequest:  { [weak self] _ in
+                self?.pokemon.removeAll()
+            }).sink(receiveCompletion: { _ in }) { [weak self] pokemonResult in
+                self?.pokemon = pokemonResult.results
+                self?.reloadPokemonSubject.send(.success(()))
+            }.store(in: &subscriptions)
+        
+    }
+    
+    //MARK: Networking
+    private func fetchData() -> AnyPublisher<Results, Error> {
+        return networkService.getRequest(urlString: "https://pokeapi.co/api/v2/pokemon?limit=151&offset=0", model: results)
     }
     
     private func fetchPokemonDetails(pokemon: Pokemon, completion: @escaping (PokemonEntry) -> Void) {
-        let placeHolderDetails = PokemonDetails(height: 0, id: 0, name: "", sprites: Sprites(front_default: ""), weight: 0)
-        networkService.getRequest(urlString: pokemon.url, model: placeHolderDetails) { [weak self] result in
-            switch result {
-            case .success(let response):
-                print("\(response)")
-                guard let pokemonDetails = response as? PokemonDetails else {
-                    fatalError("No results from endpoint")
-                }
-                self?.getSprite(pokemonDetails: pokemonDetails, completion: { image in
-                    completion(PokemonEntry(pokemonDetails: pokemonDetails, image: image))
-                })
-            case .failure(_):
-                fatalError("Unable to get data for \(pokemon.name)")
-            }
-        }
+//        let placeHolderDetails = PokemonDetails(height: 0, id: 0, name: "", sprites: Sprites(front_default: ""), weight: 0)
+//        let asdf = networkService.getRequest(urlString: pokemon.url, model: placeHolderDetails)
     }
     
     private func getSprite(pokemonDetails: PokemonDetails, completion: @escaping (UIImage) -> Void) {
@@ -68,8 +70,6 @@ class MainViewModel {
     
     init(networkService: NetworkService, completion: @escaping () -> Void) {
         self.networkService = networkService
-        fetchData(completion: {
-            completion()
-        })
+        completion()
     }
 }

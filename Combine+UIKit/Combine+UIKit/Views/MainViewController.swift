@@ -10,16 +10,32 @@ import Combine
 
 class MainViewController: UIViewController {
     
+    private(set) var subscriptions = Set<AnyCancellable>()
+    private(set) var loadDataSubject = PassthroughSubject<Void, Never>()
+    
     private(set) var viewModel: MainViewModel!
     
     @IBOutlet weak var tableView: UITableView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         navigationItem.title = "Pokemon"
         tableView.delegate = self
         tableView.dataSource = self
+        setupBinding()
+        loadDataSubject.send()
+        tableView.reloadData()
+    }
+    
+    private func setupBinding() {
+        viewModel.attachViewEventListener(loadData: loadDataSubject.eraseToAnyPublisher())
+        viewModel.reloadPokemonSubject
+            .sink { completion in
+                print("There was an error")
+            } receiveValue: { [weak self] _ in
+                self?.tableView.reloadData()
+            }
+            .store(in: &subscriptions)
     }
     
     func setup(_ viewModel: MainViewModel) {
