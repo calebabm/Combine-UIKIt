@@ -10,10 +10,13 @@ import Combine
 
 class MainViewModel {
     
-    private var loadData: AnyPublisher<Void, Never> = PassthroughSubject<Void, Never>().eraseToAnyPublisher()
-    var reloadPokemonSubject = PassthroughSubject<Result<Void, Error>, Never>()
     var subscriptions = Set<AnyCancellable>()
     
+    //MARK: Table View Datasource
+    private var loadData: AnyPublisher<Void, Never> = PassthroughSubject<Void, Never>().eraseToAnyPublisher()
+    var reloadPokemonSubject = PassthroughSubject<Result<Void, Error>, Never>()
+    
+    //MARK: Detail View Datasource
     var selectedPokemonSubject = PassthroughSubject<PokemonEntry, Never>()
     var selectedPokemon: AnyPublisher<PokemonEntry, Never> {
             selectedPokemonSubject.eraseToAnyPublisher()
@@ -23,25 +26,12 @@ class MainViewModel {
     private(set) var results = Results(results: [])
     private(set) var pokemon: [Pokemon] = []
     
+    
     //MARK: View actions
-    func didSelectRow(for pokemon: Pokemon) {
-        self.fetchPokemonDetails(pokemon: pokemon)
-//        let pokemonDetails = fetchPokemonDetails(pokemon: pokemon[index])
-//        let _ = pokemonDetails.sink(receiveCompletion: { _ in }) { pokemonDetails in
-//            self.getSprite(pokemonDetails: pokemonDetails) { sprite in
-//                let entry = PokemonEntry(pokemonDetails: pokemonDetails, image: sprite)
-//                let detailViewModel =  DetailViewModel(entry)
-//                DispatchQueue.main.async {
-//                    let storyboard = UIStoryboard(name: "Main", bundle: nil)
-//                    guard let detailViewController = storyboard.instantiateViewController(identifier: "DetailViewController") as? DetailViewController else { return }
-//                    detailViewController.setup(detailViewModel)
-//                    completion(detailViewController)
-//                }
-//            }
-//        }
+    func didSelectRow(_ index: Int) {
+        self.attachSelectedPokemonEventListener(pokemon: self.pokemon[index])
     }
     
-    //MARK: Attach reloadPokemonSubject to changes from network request
     func attachViewEventListener(loadData: AnyPublisher<Void, Never>) {
         self.loadData = loadData
         self.loadData
@@ -59,12 +49,7 @@ class MainViewModel {
             .store(in: &subscriptions)
     }
     
-    //MARK: Networking
-    private func fetchData() -> AnyPublisher<Results, Error> {
-        return networkService.getRequest(urlString: "https://pokeapi.co/api/v2/pokemon?limit=151&offset=0", model: results)
-    }
-    
-    private func fetchPokemonDetails(pokemon: Pokemon) {
+    private func attachSelectedPokemonEventListener(pokemon: Pokemon) {
         let placeHolderDetails = PokemonDetails(height: 0, id: 0, name: "", sprites: Sprites(front_default: ""), weight: 0)
         networkService.getRequest(urlString: pokemon.url, model: placeHolderDetails).sink { error in
             print(error)
@@ -75,6 +60,12 @@ class MainViewModel {
             }
         }.store(in: &subscriptions)
     }
+    
+    //MARK: Networking
+    private func fetchData() -> AnyPublisher<Results, Error> {
+        return networkService.getRequest(urlString: "https://pokeapi.co/api/v2/pokemon?limit=151&offset=0", model: results)
+    }
+    
     
     private func getSprite(pokemonDetails: PokemonDetails, completion: @escaping (UIImage) -> Void) {
         guard let url = URL(string: pokemonDetails.sprites.front_default), let data = try? Data(contentsOf: url), let image = UIImage(data: data) else {

@@ -30,6 +30,7 @@ class MainViewController: UIViewController {
     
     private func setupBinding() {
         viewModel.attachViewEventListener(loadData: loadDataSubject.eraseToAnyPublisher())
+        
         viewModel.reloadPokemonSubject
             .sink { completion in
                 print("There was an error")
@@ -37,13 +38,17 @@ class MainViewController: UIViewController {
                 self?.tableView.reloadData()
             }
             .store(in: &subscriptions)
+        
+        
         viewModel.selectedPokemon.sink { _ in } receiveValue: { entry in
             DispatchQueue.main.async {
+                
                 let viewModel = DetailViewModel(entry)
                 let storyboard = UIStoryboard(name: "Main", bundle: nil)
                 guard let detailViewController = storyboard.instantiateViewController(identifier: "DetailViewController") as? DetailViewController else { return }
                 detailViewController.setup(viewModel)
                 self.navigationController?.present(detailViewController, animated: true, completion: nil)
+                
             }
         }
         .store(in: &subscriptions)
@@ -67,11 +72,6 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        viewModel.didSelectRow(for: self.viewModel.pokemon[indexPath.row])
-//        viewModel.didSelect(with: selectedEntry!) { [weak self] viewController in
-//            DispatchQueue.main.async {
-//                self?.navigationController?.present(viewController, animated: true, completion: nil)
-//            }
-//        }
+        viewModel.didSelectRow(indexPath.row)
     }
 }
