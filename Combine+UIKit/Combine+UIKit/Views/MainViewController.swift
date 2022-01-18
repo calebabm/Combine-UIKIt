@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Combine
 
 class MainViewController: UIViewController {
     
@@ -19,7 +20,6 @@ class MainViewController: UIViewController {
         navigationItem.title = "Pokemon"
         tableView.delegate = self
         tableView.dataSource = self
-        
     }
     
     func setup(_ viewModel: MainViewModel) {

@@ -5,11 +5,12 @@
 //  Created by Caleb Meurer on 1/17/22.
 //
 
-import Foundation
 import UIKit
+import Combine
 
 class DetailViewController: UIViewController {
     
+    private var subscriptions = Set<AnyCancellable>()
     private(set) var viewModel: DetailViewModel!
     
     @IBOutlet var imageView: UIImageView!
@@ -20,11 +21,19 @@ class DetailViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        imageView.image = viewModel.pokemonEntry.image
-        nameLabel.text = viewModel.pokemonEntry.pokemonDetails.name.capitalized
-        weightLabel.text = "Weight: \(viewModel.pokemonEntry.pokemonDetails.weight)"
-        heightLabel.text = "Height: \(viewModel.pokemonEntry.pokemonDetails.height)"
-        idLabel.text = "ID: \(viewModel.pokemonEntry.pokemonDetails.id)"
+        
+        setupBindings()
+    }
+    
+    //TODO: Read More about this and the AnyCancellable protocol
+    func setupBindings() {
+        subscriptions = [
+            viewModel.$image.assign(to: \.image!, on: imageView),
+            viewModel.$name.assign(to: \.text!, on: nameLabel),
+            viewModel.$weight.assign(to: \.text!, on: weightLabel),
+            viewModel.$height.assign(to: \.text!, on: heightLabel),
+            viewModel.$id.assign(to: \.text!, on: idLabel)
+        ]
     }
     
     func setup(_ viewModel: DetailViewModel) {
