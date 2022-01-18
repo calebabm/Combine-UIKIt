@@ -21,10 +21,10 @@ class DetailViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.imageView.image = viewModel.pokemonEntry.image
-//        self.nameLabel.text = viewModel.pokemonEntry.pokemonDetails.name
-//        self.weightLabel.text = "\(viewModel.pokemonEntry.pokemonDetails.weight)"
-//        self.heightLabel.text = "\(viewModel.pokemonEntry.pokemonDetails.height)"
-//        self.idLabel.text = "\(viewModel.pokemonEntry.pokemonDetails.id)"
+        self.nameLabel.text = viewModel.pokemonEntry.pokemonDetails.name.capitalized
+        self.weightLabel.text = "Weight: \(viewModel.pokemonEntry.pokemonDetails.weight)"
+        self.heightLabel.text = "Height: \(viewModel.pokemonEntry.pokemonDetails.height)"
+        self.idLabel.text = "ID: \(viewModel.pokemonEntry.pokemonDetails.id)"
     }
     
     func setup(_ viewModel: DetailViewModel) {

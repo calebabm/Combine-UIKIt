@@ -9,6 +9,7 @@ import Foundation
 import UIKit
 
 class PokemonEntry {
+    var nickname = ""
     var pokemonDetails: PokemonDetails
     var image: UIImage
     //var types: Types
