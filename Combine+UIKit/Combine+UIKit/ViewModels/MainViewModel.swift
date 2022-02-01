@@ -32,6 +32,7 @@ class MainViewModel {
         self.attachSelectedPokemonEventListener(pokemon: self.pokemon[index])
     }
     
+    //Main view
     func attachViewEventListener(loadData: AnyPublisher<Void, Never>) {
         self.loadData = loadData
         self.loadData
@@ -49,6 +50,7 @@ class MainViewModel {
             .store(in: &subscriptions)
     }
     
+    //Detail view
     private func attachSelectedPokemonEventListener(pokemon: Pokemon) {
         let placeHolderDetails = PokemonDetails(height: 0, id: 0, name: "", sprites: Sprites(front_default: ""), weight: 0)
         networkService.getRequest(urlString: pokemon.url, model: placeHolderDetails).sink { error in

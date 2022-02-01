@@ -12,7 +12,6 @@ class MainViewController: UIViewController {
     
     private(set) var subscriptions = Set<AnyCancellable>()
     private(set) var loadDataSubject = PassthroughSubject<Void, Never>()
-    private(set) var selectedEntry: PokemonEntry?
     
     private(set) var viewModel: MainViewModel!
     
